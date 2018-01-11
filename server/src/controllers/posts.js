@@ -73,7 +73,7 @@ exports.getPost = (req, res, next) => {
  */
 exports.addPost = (req, res, next) => {
 
-    if (!req.params.user_id) {
+    if (!req.body.user_id) {
         return res.status(400).json({
 			code: 400,
 			status: 'error',
@@ -82,8 +82,8 @@ exports.addPost = (req, res, next) => {
     }
 
     const post = new Post({
-        user_id: req.params.user_id,
-        text: req.params.text,
+        user_id: req.body.user_id,
+        text: req.body.text,
     });
 
     post.save().then(err => {

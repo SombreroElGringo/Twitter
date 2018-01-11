@@ -4,8 +4,8 @@ const mongoose = require('mongoose');
 const postSchema = new  mongoose.Schema({
 
     user_id: String,
-    text: String,
-    likes: [{type: String}],
+    text: { type: String, max: 255 },
+    likes: [{ type: String }],
     
 }, { timestamps: true });
   
