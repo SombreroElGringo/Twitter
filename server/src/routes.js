@@ -15,6 +15,10 @@ module.exports = function(app, passport) {
      * Posts routes
      */
     app.get('/posts', postsController.getPosts);
-    
+    app.post('/posts', postsController.addPost);
+    app.get('/posts/:id([a-z0-9]{12,})', postsController.getPost);
+    app.post('/posts/:id([a-z0-9]{12,})', postsController.editPost);
+    app.delete('/posts/:id([a-z0-9]{12,})', postsController.deletePost);
+
     return app;
 }
