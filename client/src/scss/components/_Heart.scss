@@ -1,0 +1,34 @@
+div {
+    ._heart {
+        a {
+            width: 24px;
+            height: 24px;
+            content: " ";
+            display: block;
+            text-decoration: none;
+            color: #66747f;
+            background: url('../../assets/img/unlike.png') no-repeat;
+            background-size:cover;
+            &:hover {
+                background: url('../../assets/img/like.png') no-repeat;
+                background-size:cover;
+                color: #d85949;
+            }
+
+            &._liked {
+                background: url('../../assets/img/like.png') no-repeat;
+                background-size:cover;
+                color: #d85949;
+                &:hover {
+                    color: #66747f;
+                    background: url('../../assets/img/unlike.png') no-repeat;
+                    background-size:cover;
+                }
+            }
+            span {
+                position: relative;
+                left: 30px;
+            }
+        }
+    }
+}

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Heart from './Heart';
 
 export default class Tweet extends Component {
 	render() {
@@ -17,7 +18,7 @@ export default class Tweet extends Component {
                     {text}
                 </div>
                 <div className="_footer">
-                    {likes}
+                    <Heart id={id} likes={likes} />
                 </div>
             </div>
 		);

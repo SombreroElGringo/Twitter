@@ -1,7 +1,9 @@
 @import "https://fonts.googleapis.com/css?family=Roboto+Mono:400,500";
 @import "components/Navbar";
 @import "components/Dataflow";
+@import "components/Tweeting";
 @import "components/Tweet";
+@import "components/Heart";
 
 $font-stack: Roboto mono, cursive;
 
@@ -11,7 +13,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
     background-color: #e6ecf1;
     .App {
-        overflow: hidden;
+        overflow-x: hidden;
         height: 100vh;
     }
 }
