@@ -1,0 +1,58 @@
+div {
+    &._signup {
+        width: 450px;
+        background-color: #fff;
+        ._header {
+            font-size: 12px;
+            display: flex;
+            padding: 10px 40px 0px 40px;
+        }
+        ._inputs {
+            padding: 0 40px 60px;
+            display: grid;
+            input[type="text"], input[type="email"] {
+                margin-top: 20px;
+                height: 32px;
+                font-size: 18px;
+                font-weight: bold;
+                color: #aab8c2;
+                outline: 0;
+                background-color: #fff;
+                border: 1px solid #e6ecf0;
+                border-radius: 3px;
+            }
+        }
+        ._submit {
+            padding: 0 60px;
+            padding-bottom: 20px;
+            input[type="button"] {
+                width: 100%;
+                background-color: #1da1f2;
+                border: 1px solid #1da1f2;
+                font-size: 20px;
+                font-weight: bold;
+                color: #fff;
+                cursor: pointer;
+                border-radius: 100px;
+                box-shadow: none;
+                text-align: center;
+                white-space: nowrap;
+                padding: 12px 20px;
+                outline: none;
+            }
+        }
+        ._footer {
+            font-size: 18px;
+            display: flex;
+            padding: 0 40px 20px 40px;
+            h3 {
+                width: 100%;
+                text-align: center;
+                a {
+                    color: #1da1f2;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+}

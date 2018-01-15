@@ -3,7 +3,7 @@ import '../assets/css/App.css';
 import Navbar from '../components/Navbar';
 import Dataflow from '../components/Dataflow';
 
-export default class IndexPage extends Component {
+export default class IndexScreen extends Component {
     render() {
 		return (
 			<div className="App">
