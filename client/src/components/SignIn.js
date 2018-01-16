@@ -25,7 +25,7 @@ export default class SignIn extends Component {
                     <input type="button" value="Se connecter" onClick={e => this.handleSubmit()} />
                 </div> 
                 <div className="_footer">
-                    <h3>Vous avez un compte ? <a onClick={e => this.handleClick(e)}>Connectez-vous</a></h3>
+                    <h3>Vous n'avez pas de compte ? <a onClick={e => this.handleClick(e)}>Inscrivez-vous</a></h3>
                 </div>
             </div>
 		);

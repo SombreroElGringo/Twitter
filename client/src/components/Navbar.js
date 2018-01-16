@@ -9,7 +9,7 @@ export default class Navbar extends Component {
 					<ul>
 						<li>
 							<span>
-								<a href="/">Acceuil</a>
+								<a href="/">Accueil</a>
 							</span>
 						</li>
 						<li>
@@ -25,7 +25,7 @@ export default class Navbar extends Component {
 					</ul>
 				</div>
 				<div className="_logo">
-					<span className="_twitter">Twitter ❤️</span>
+					<span/>
 				</div>
 				<div className="_avatar">
 					<a href="/account">My account</a>

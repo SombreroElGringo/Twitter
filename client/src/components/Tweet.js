@@ -7,8 +7,9 @@ export default class Tweet extends Component {
 		return (
             <div className="_tweet">
                 <div className="_header"> 
+                    <img className="_avatar" src="https://unsplash.it/64?random" alt="avatar" />
                     <span className="_username">
-                        <a href={`/account/${id}`}>@{username}</a>
+                        <a href={`/account/${username}`}>@{username}</a>
                     </span>
                     <span className="_createdAt">
                         {createdAt}

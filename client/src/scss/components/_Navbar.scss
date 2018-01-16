@@ -36,12 +36,21 @@ div {
                 }
             }
             ._logo {
-                margin: 16px 10%;
+                margin: 16px 15%;
                 span {
                     font-size: 16px;
                     font-weight: bold;
                     line-height: 1;
                     color: #1b95e0;        
+                }
+                span {
+                    width: 24px;
+                    height: 24px;
+                    content: " ";
+                    display: block;
+                    text-decoration: none;
+                    background: url('../../assets/img/twitter.png') no-repeat;
+                    background-size:cover;
                 }
             }
             ._avatar {
