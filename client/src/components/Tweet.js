@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import Heart from './Heart';
+import moment from 'moment';
+import 'moment/locale/fr';
 
 export default class Tweet extends Component {
 	render() {
@@ -12,7 +14,7 @@ export default class Tweet extends Component {
                         <a href={`/account/${username}`}>@{username}</a>
                     </span>
                     <span className="_createdAt">
-                        {createdAt}
+                        {moment(createdAt).from()}
                     </span>
                 </div>
                 <div className="_text">

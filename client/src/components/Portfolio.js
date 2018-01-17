@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import moment from 'moment';
+import 'moment/locale/fr';
 
 export default class Porfolio extends Component {
     constructor(props) {
@@ -34,7 +36,7 @@ export default class Porfolio extends Component {
                             ):(
                                 <span className="_description">{description}</span>
                             )}
-                            <span className="_date"><span />Inscrit en {createdAt}</span>
+                            <span className="_date"><span />Inscrit en {moment(createdAt).format('MMMM YYYY')}</span>
                         </div>
                     </div>
                     <div className="_navigation">

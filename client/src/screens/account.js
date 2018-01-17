@@ -9,7 +9,7 @@ export default class AccountScreen extends Component {
         const data = {
             username: 'michel',
             description: 'Artiste & Ingénieur!',
-            createdAt: '1 year',
+            createdAt: '2017-10-13T16:13:35.367Z',
         }
 		return (
 			<div className="App">

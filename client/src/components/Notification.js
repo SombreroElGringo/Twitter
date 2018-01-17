@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import moment from 'moment';
+import 'moment/locale/fr';
 
 export default class Notification extends Component {
 	render() {
@@ -11,7 +13,7 @@ export default class Notification extends Component {
                         <a href={`/account/${username}`}>@{username}</a>
                     </span>
                     <span className="_createdAt">
-                        {createdAt}
+                        {moment(createdAt).from()}
                     </span>
                 </div>
                 <div className="_text">

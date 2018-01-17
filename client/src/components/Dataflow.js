@@ -17,7 +17,7 @@ export default class Dataflow extends Component {
             id: 1,
             username: 'michel',
             text: 'lalalalal ddddd',
-            createdAt: '12h',
+            createdAt: '2017-10-13T16:13:35.367Z',
             likes: 2,
         }
 

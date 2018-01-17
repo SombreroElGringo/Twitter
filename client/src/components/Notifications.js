@@ -11,7 +11,7 @@ export default class Notifications extends Component {
                 username: 'nils',
                 target: 'my_pseudo',
                 text: 'nils liked your tweet',
-                createdAt: '12h',
+                createdAt: '2017-10-13T16:13:35.367Z',
             },
             {
                 id: 2,
@@ -20,7 +20,7 @@ export default class Notifications extends Component {
                 username: 'jean',
                 target: 'my_pseudo',
                 text: 'jean unliked your tweet',
-                createdAt: '11h',
+                createdAt: '2017-10-13T16:13:35.367Z',
             }
         ];
 
