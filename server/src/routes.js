@@ -3,9 +3,16 @@
  */
 const usersController = require('./controllers/users');
 const postsController = require('./controllers/posts');
+const indexController = require('./controllers/index');
 
 
 module.exports = function(app, passport) {
+    
+    /**
+     * Index
+     */
+    app.get('/', indexController.getIndex);
+
     /**
      * Users routes
      */

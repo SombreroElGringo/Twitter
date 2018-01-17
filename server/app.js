@@ -10,7 +10,7 @@ const mongoose = require('mongoose');
 /**
  *  Load environment variables from .env file, where API keys and passwords are configured.
  */
-dotenv.load({path: '.env'});
+dotenv.config();
 
 
 /**
@@ -22,6 +22,11 @@ const app = express();
  * Express configuration.
  */
 module.exports = require('./config/express')(app);
+
+/**
+ * Firebase configuration & init
+ */
+module.exports = require('./config/firebase')();
 
 /**
  * App routes.
@@ -47,7 +52,7 @@ app.use((err, req, res, next) => {
     };
 
     if(app.get('env') === 'development') {
-       data.stack = err.stack
+       data.stack = err.stack;
     }
 
     res.status(data.status);
