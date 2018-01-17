@@ -29,6 +29,7 @@ div {
                 }
                 ._informations {
                     position: absolute;
+                    width: 350px;
                     padding-left: 10px;
                     display: grid;
                     span {
@@ -37,6 +38,31 @@ div {
                             font-weight: 500;
                             color: #000;
                         }
+
+                        &._date {
+                            display: flex;
+                            span {
+                                width: 24px;
+                                height: 24px;
+                                content: " ";
+                                display: block;
+                                margin-right: 10px;
+                                text-decoration: none;
+                                background: url('../../assets/img/calendar.png') no-repeat;
+                                background-size:cover;
+                            }
+                        }
+                    }
+                    input[type="text"] {
+                        margin-top: 20px;
+                        height: 32px;
+                        font-size: 18px;
+                        font-weight: bold;
+                        color: #aab8c2;
+                        outline: 0;
+                        background-color: #fff;
+                        border: 1px solid #e6ecf0;
+                        border-radius: 3px;
                     }
                 }
             }
@@ -62,6 +88,28 @@ div {
                             }
                         }
                     }
+                }
+            }
+
+            ._edit {
+                padding-top: 10px;
+                padding-left: 400px;
+                float: left;
+
+                input[type="button"] {
+                    width: 100%;
+                    background-color: #fff;
+                    border: 2px solid #66747f;
+                    font-size: 16px;
+                    font-weight: bold;
+                    color: #66747f;
+                    cursor: pointer;
+                    border-radius: 100px;
+                    box-shadow: none;
+                    text-align: center;
+                    white-space: nowrap;
+                    padding: 10px 15px;
+                    outline: none;
                 }
             }
         }
