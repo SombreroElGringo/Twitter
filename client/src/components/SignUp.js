@@ -22,28 +22,29 @@ export default class SignUp extends Component {
         const email = this.email.value;
         const username = this.username.value;
         const password = this.password.value;
-        let payload = {email, username, password};
 
         if (this.emailIsValid(email) && username.length > 0 && password.length > 5 ) {
             
             auth.doCreateUserWithEmailAndPassword(email, password)
-            .then(() => {
+            .then(async () => {
+            
+                const user = auth.getCurrentUser();
+                const token = await auth.getCurrentUserToken();
+                const uid = user.uid;
+                const payload = `uid=${uid}&email=${email}&username=${username}&token=${token}`;
 
-                let data = new FormData();
-                data.append('json', JSON.stringify( payload ));
-
-                await fetch(process.env.REACT_APP_API_URI, {
-                    method: 'POST',
+                fetch(process.env.REACT_APP_API_URI + '/users', {
+                    method: 'post',
                     credentials: 'include',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     },
-                    body: data,
+                    body: payload,
                 })
                 .then((res) => res.json())
                 .then((response) => {
                     if (response.status === 'success') {
-                        console.log('success');
+                        console.log(response);
                         this.setState({
                             isAuth: true,
                         });

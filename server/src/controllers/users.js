@@ -1,3 +1,5 @@
+const admin = require('firebase-admin');
+const db = admin.database();
 const User = require('../models/User');
 
 /** 
@@ -70,12 +72,13 @@ exports.getUser = (req, res, next) => {
  * @param {Function} next - Express next middleware function 
  */
 exports.addUser = (req, res, next) => {
-
-    if (!req.body.email || !req.body.password || !req.body.username) {
+    
+    if (!req.body.uid ||!req.body.email || !req.body.username || !req.body.token) {
 
         let params = req.body.email ? '' : 'email';
-        params += req.body.password ? '' : params === '' ? 'password' : ', password';
+        params += req.body.uid ? '' : params === '' ? 'uid' : ', uid';
         params += req.body.username ? '' : params === '' ? 'username' : ', username';
+        params += req.body.token ? '' : params === '' ? 'token' : ', token';
 
         return res.status(400).json({
 			code: 400,
@@ -84,22 +87,18 @@ exports.addUser = (req, res, next) => {
 		});
     }
 
-    const user = new User({
+    const ref = db.ref("users");
+    var usersRef = ref.child(req.body.uid);
+    usersRef.set({
         email: req.body.email,
-        password: req.body.password,
         username: req.body.username,
+        token: req.body.token,
     });
 
-    user.save().then(err => {
-
-        return res.status(201).json({
-            code: 201,
-            status: 'success',
-            message: 'User created!'
-        });
-    }).catch(err => {
-
-        return next(err);
+    return res.status(201).json({
+        code: 201,
+        status: 'success',
+        message: 'User created!'
     });
 };
 

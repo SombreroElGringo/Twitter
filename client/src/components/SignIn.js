@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import { auth } from '../firebase';
 
 export default class SignIn extends Component {
     constructor(props) {
         super(props);
     
         this.state = {
+            isAuth: null,
             isValid: true,
             error: null,
         }
@@ -20,9 +22,18 @@ export default class SignIn extends Component {
         const email = this.email.value;
         const password = this.password.value;
 
-        if (this.emailIsValid(email) && password.length > 0 ) {
+        if (this.emailIsValid(email) && password.length > 5 ) {
            
-            console.log('signin - data posted!');
+            auth.doSignInWithEmailAndPassword(email, password)
+            .then(() => {
+                console.log('Signin - success');
+                this.setState({
+                    isAuth: true,
+                });     
+            })
+            .catch(err => {
+                console.log(`[ERROR][SIGNIN] : ${err}`);
+            });
         } else {
 
             let error = this.emailIsValid(email) ? '' : 'Email';
