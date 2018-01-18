@@ -44,20 +44,23 @@ exports.getUser = (req, res, next) => {
 
     const id = req.params.id; 
 
-    User.findOne({_id: new ObjectId(id)})
-        .then(data => {
+    const ref = db.ref(`/users/${id}`);
+
+    ref.once('value', function(snapshot) {
+  
+        const data = {
+            id: snapshot.key,
+            username:  snapshot.val().username,
+            description: snapshot.val().description,
+            createdAt:  snapshot.val().createdAt,
+        };
 
         return res.json({ 
             user: data,
         });
-    })
-    .catch(err => {
+    }, errorObject => {
 
-		return res.status(404).json({
-			code: 404,
-			status: 'error',
-			message: `User not found!`,
-        })
+		console.log(`[Error] ${errorObject}`);
     });
 };
 
@@ -92,7 +95,9 @@ exports.addUser = (req, res, next) => {
     usersRef.set({
         email: req.body.email,
         username: req.body.username,
+        description: '',
         token: req.body.token,
+        createdAt: Date.now(),
     });
 
     return res.status(201).json({

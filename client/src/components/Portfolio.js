@@ -8,6 +8,9 @@ export default class Porfolio extends Component {
 
         this.state = {
             onEdit: null,
+            username: this.props.data.username || 'Anonymous',
+            description: this.props.data.description || 'My description!',
+            createdAt: this.props.data.createdAt || 1516299116,
         }
     }
 
@@ -19,8 +22,9 @@ export default class Porfolio extends Component {
     }
 
 	render() {
-        const { username, description, createdAt } = this.props.data;
-        const { onEdit } = this.state;
+
+        const { username, description, createdAt, onEdit } = this.state;
+
 		return (
             <div className="_portfolio">
                 <div className="_banner"> 

@@ -1,7 +1,33 @@
 import React, { Component } from 'react';
+import { auth } from '../firebase';
 
 export default class Navbar extends Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			uid: null,
+		}
+	}
+
+	componentDidMount() {
+        const { uid } = this.state;
+        const interval = window.setInterval(async ()=>{
+
+            let user = auth.getCurrentUser();
+            if(!user)
+                return false;
+            clearInterval(interval);
+            
+            this.setState({
+                uid: user.uid,
+            });
+        }, 1000)
+	}
+	
 	render() {
+		const { uid } = this.state;
+
 		return (
 		<div className="_navbar">
 			<div className="_menu">
@@ -28,7 +54,7 @@ export default class Navbar extends Component {
 					<span/>
 				</div>
 				<div className="_avatar">
-					<a href="/account">My account</a>
+					<a href={`/account/${uid}`}>My account</a>
 				</div>
 			</div>
 		</div>

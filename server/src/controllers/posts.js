@@ -16,19 +16,35 @@ const db = admin.database();
  */
 exports.getPosts = (req, res, next) => {
 
+    const uid = req.query.uid;
     const ref = db.ref('posts');
 
     ref.once('value', function(snapshot) {
         let data = [];
         snapshot.forEach(function(childSnapshot) {
             
-            data.push({
-                id: childSnapshot.key,
-                username:  childSnapshot.val().username,
-                text:  childSnapshot.val().text,
-                createdAt:  childSnapshot.val().createdAt,
-                likes: Object.keys(childSnapshot.val().likes),
-            });
+            if (uid) {
+                if (uid === childSnapshot.val().user_uid) {
+                    let likes = childSnapshot.val().likes ? Object.keys(childSnapshot.val().likes) : [];
+                    data.push({
+                        id: childSnapshot.key,
+                        username:  childSnapshot.val().username,
+                        text:  childSnapshot.val().text,
+                        createdAt:  childSnapshot.val().createdAt,
+                        likes,
+                    });
+                }
+            } else {
+                let likes = childSnapshot.val().likes ? Object.keys(childSnapshot.val().likes) : [];
+                data.push({
+                    id: childSnapshot.key,
+                    user_uid: childSnapshot.val().user_uid,
+                    username:  childSnapshot.val().username,
+                    text:  childSnapshot.val().text,
+                    createdAt:  childSnapshot.val().createdAt,
+                    likes,
+                });
+            }
         })
         return res.json({ 
             posts: data,
@@ -72,9 +88,9 @@ exports.getPost = (req, res, next) => {
 
 
 /** 
- *  Posts page, add a post in the db
- * @function addPost
- * @name /posts
+ *  Posts page, like a post in the db
+ * @function likePost
+ * @name /posts/:id
  * @method POST
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object

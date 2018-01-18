@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 
 export default class Heart extends Component {
 
@@ -18,18 +19,21 @@ export default class Heart extends Component {
         .then((response) => {
             if (response.status === 'success') {
                 console.log(response);
+                // TODO: reload dataflow
             }
         });
     }
 
 	render() {
-        const { uid, id, token, likes } = this.props;
+        const { likes, uid } = this.props;
+        let active = _.includes(likes, uid) ? '_liked' : '';
+        
 		return (
-            <div className="_heart">
-                <a 
+            <div className='_heart'>
+                <a className={active}
                     onClick={e => this.handleClick()}
                 >
-                    <span>{likes}</span>
+                    <span>{likes.length ? likes.length : 0}</span>
                 </a>
             </div>
 		);
