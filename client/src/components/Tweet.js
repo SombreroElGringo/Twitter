@@ -6,6 +6,8 @@ import 'moment/locale/fr';
 export default class Tweet extends Component {
 	render() {
         const { id, username, text, createdAt, likes} = this.props.data;
+        const { uid, token } = this.props;
+
 		return (
             <div className="_tweet">
                 <div className="_header"> 
@@ -21,7 +23,7 @@ export default class Tweet extends Component {
                     {text}
                 </div>
                 <div className="_footer">
-                    <Heart id={id} likes={likes} />
+                    <Heart id={id} likes={likes ? likes.length : 0} uid={uid} token={token} />
                 </div>
             </div>
 		);

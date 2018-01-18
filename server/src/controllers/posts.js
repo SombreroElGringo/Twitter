@@ -1,5 +1,9 @@
 const Post = require('../models/Post');
 const ObjectId = require('mongodb').ObjectID;
+const md5 = require('md5');
+const _ = require('lodash');
+const admin = require('firebase-admin');
+const db = admin.database();
 
 /** 
  *  Posts page, return a JSON with all posts in the db
@@ -12,21 +16,26 @@ const ObjectId = require('mongodb').ObjectID;
  */
 exports.getPosts = (req, res, next) => {
 
-    Post.find()
-        .sort({createdAt: -1})
-        .then(data => {
+    const ref = db.ref('posts');
 
+    ref.once('value', function(snapshot) {
+        let data = [];
+        snapshot.forEach(function(childSnapshot) {
+            
+            data.push({
+                id: childSnapshot.key,
+                username:  childSnapshot.val().username,
+                text:  childSnapshot.val().text,
+                createdAt:  childSnapshot.val().createdAt,
+                likes: Object.keys(childSnapshot.val().likes),
+            });
+        })
         return res.json({ 
             posts: data,
         });
-    })
-    .catch(err => {
+    }, errorObject => {
 
-		return res.status(404).json({
-			code: 404,
-			status: 'error',
-			message: `Bad Request!\n ${err}`,
-        })
+		console.log(`[Error] ${errorObject}`);
     });
 };
 
@@ -71,32 +80,96 @@ exports.getPost = (req, res, next) => {
  * @param {Object} res - Express response object
  * @param {Function} next - Express next middleware function 
  */
-exports.addPost = (req, res, next) => {
+exports.likePost = (req, res, next) => {
 
-    if (!req.body.user_id) {
+    const uid = req.body.uid;
+    const id = req.params.id;
+
+    if (!uid || !id) {
+
+        let params = id ? '' : 'id';
+        params += uid ? '' : params === '' ? 'uid' : ', uid';
+
         return res.status(400).json({
 			code: 400,
 			status: 'error',
-			message: 'user_id cannot be empty!',
+			message: `${params} cannot be empty!`,
+		});
+    }
+    db.ref(`/posts/${id}/likes/${uid}`)
+        .once('value')
+        .then(snapshot => {
+            let type = '';
+            if (snapshot.val()) {
+                db.ref(`/posts/${id}/likes/${uid}`)
+                    .remove();
+                type = 'unliked';
+            } else {
+                db.ref(`/posts/${id}/likes/${uid}`)
+                    .set('like');
+                type = 'liked';
+            }
+
+            return res.status(200).json({
+                code: 200,
+                status: 'success',
+                message: `Tweet ${type}!`
+            });
+        });
+};
+
+
+/** 
+ *  Posts page, add a post in the db
+ * @function addPost
+ * @name /posts
+ * @method POST
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function 
+ */
+exports.addPost = (req, res, next) => {
+
+    const user_uid = req.body.user_uid;
+    const text = req.body.text;
+
+    if (!user_uid || !text) {
+
+        let params = user_uid ? '' : 'user_uid';
+        params += text ? '' : params === '' ? 'text' : ', text';
+
+        return res.status(400).json({
+			code: 400,
+			status: 'error',
+			message: `${params} cannot be empty!`,
 		});
     }
 
-    const post = new Post({
-        user_id: req.body.user_id,
-        text: req.body.text,
-    });
+    const now = Date.now();
+    let str = `_${user_uid}_${now}_`;
+    const uid = md5(str);
+    
+    db.ref('/users/' + user_uid)
+        .once('value')
+        .then(snapshot => {
+            const username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
+            //console.log(`${username} tweeted!`);
+            const ref = db.ref('posts');
+            const postsRef = ref.child(uid);
+            postsRef.set({
+                text: text,
+                user_uid: user_uid,
+                username: username,
+                likes: [],
+                createdAt: now
+            });
 
-    post.save().then(err => {
-
-        return res.status(201).json({
-            code: 201,
-            status: 'success',
-            message: 'Story created!'
+            return res.status(201).json({
+                code: 201,
+                status: 'success',
+                message: 'Tweet created!'
+            });
         });
-    }).catch(err => {
-
-        return next(err);
-    });
 };
 
 

@@ -30,6 +30,8 @@ module.exports = function(app, passport) {
     app.get('/posts/:id([a-z0-9]{12,})', postsController.getPost);
     app.post('/posts/:id([a-z0-9]{12,})', postsController.editPost);
     app.delete('/posts/:id([a-z0-9]{12,})', postsController.deletePost);
+    app.post('/posts/:id([a-z0-9]{12,})/like', postsController.likePost);
+
 
     return app;
 }

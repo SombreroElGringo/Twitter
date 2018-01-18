@@ -87,7 +87,7 @@ exports.addUser = (req, res, next) => {
 		});
     }
 
-    const ref = db.ref("users");
+    const ref = db.ref('users');
     var usersRef = ref.child(req.body.uid);
     usersRef.set({
         email: req.body.email,

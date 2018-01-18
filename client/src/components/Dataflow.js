@@ -1,30 +1,66 @@
 import React, { Component } from 'react';
 import Tweeting from './Tweeting';
 import Tweet from './Tweet';
+import { auth } from '../firebase';
+import { setInterval } from 'timers';
 
 export default class Dataflow extends Component {
     constructor(props) {
         super(props);
-    
+        
         this.state = {
             data: null,
-            username: this.props.username || null,
+            token: null,
+            uid: null,
         }
     }
 
-	render() {
-        const data = {
-            id: 1,
-            username: 'michel',
-            text: 'lalalalal ddddd',
-            createdAt: '2017-10-13T16:13:35.367Z',
-            likes: 2,
-        }
+    componentDidMount() {
+        const interval = window.setInterval(async ()=>{
+            let user = auth.getCurrentUser();
+            if(!user)
+                return false;
+            clearInterval(interval);
 
+            const uid = user.uid;
+            const token = await auth.getCurrentUserToken();
+            this.setState({
+                token,
+                uid,
+            });
+
+            let query = `?token=${token}`;
+            query += uid ? `&uid=${uid}` : '';
+            
+            fetch(process.env.REACT_APP_API_URI + `/posts${query}`, {
+                method: 'get',
+                credentials: 'include',
+            })
+            .then((res) => res.json())
+            .then((response) => {
+                if(response.posts) {
+                    this.setState({
+                        data: response.posts,
+                    });
+                }
+            });
+        }, 1000)
+    }
+
+	render() {
+        const { data, uid, token } = this.state;
+ 
 		return (
             <div className="_dataflow">
-                <Tweeting username="me" />
-                <Tweet data={data} />
+                <Tweeting />
+                {   data ? (
+                        data.map((item, i) => {
+                            return <Tweet key={i} data={item} token={token} uid={uid} />;
+                        })
+                    ) : (
+                        <span className='_error'>No data!</span>
+                    )
+                }
             </div>
 		);
 	}
