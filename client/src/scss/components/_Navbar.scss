@@ -1,0 +1,74 @@
+div {
+    ._navbar {
+        background-color: #fff;
+        border-bottom: 1px solid rgba(0,0,0,0.25);
+        height: 46px;
+        position: fixed;
+        width: 100%;
+        z-index: 2000;
+
+        ._menu {
+            position: relative;
+            margin: 0 12.5%;
+            display: flex;
+
+            ._navigation {
+                float: left;
+
+                ul {
+                    display: flex;
+                    list-style-type: none;
+                    li {
+                        span {
+                            font-size: 16px;
+                            font-weight: bold;
+                            line-height: 1;
+                            a {
+                                color: #66747f;
+                                text-decoration: none;
+                                padding: 0 4px 0 14px;
+                                &:hover {
+                                    color: #1b95e0;   
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            ._logo {
+                margin: 16px 15%;
+                span {
+                    font-size: 16px;
+                    font-weight: bold;
+                    line-height: 1;
+                    color: #1b95e0;        
+                }
+                span {
+                    width: 24px;
+                    height: 24px;
+                    content: " ";
+                    display: block;
+                    text-decoration: none;
+                    background: url('../../assets/img/twitter.png') no-repeat;
+                    background-size:cover;
+                }
+            }
+            ._avatar {
+                margin: 16px 0% 16px;
+                height: 100%;
+                a {
+                    font-size: 16px;
+                    font-weight: bold;
+                    line-height: 1;
+                    color: #66747f;
+                    text-decoration: none;
+                    cursor: pointer;
+                    padding: 0 4px 0 14px;
+                    &:hover {
+                        color: #1b95e0;   
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,26 @@
+@import "https://fonts.googleapis.com/css?family=Roboto+Mono:400,500";
+@import "components/Navbar";
+@import "components/Dataflow";
+@import "components/Tweeting";
+@import "components/Tweet";
+@import "components/Heart";
+@import "components/Sign";
+@import "components/SignIn";
+@import "components/SignUp";
+@import "components/Notifications";
+@import "components/Notification";
+@import "components/Portfolio";
+@import "components/Single";
+
+$font-stack: Roboto mono, cursive;
+
+body {
+    font-family: $font-stack;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #e6ecf1;
+    .App {
+        overflow-x: hidden;
+        height: 100vh;
+    }
+}

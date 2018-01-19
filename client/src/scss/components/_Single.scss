@@ -1,0 +1,13 @@
+div {
+    &._single {
+        height: 60%;
+        position: relative;
+        top: 80px;
+        display: table;
+        margin: 0 auto;
+        ._error {
+            font-size: 18px;
+            font-weight: bold;
+        }
+    }
+}

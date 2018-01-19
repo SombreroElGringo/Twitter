@@ -1,0 +1,14 @@
+div {
+    ._dataflow {
+        height: 100%;
+        position: relative;
+        top: 80px;
+        display: table;
+        margin: 0 auto;
+        ._error {
+            margin: 0 40%;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    }
+}

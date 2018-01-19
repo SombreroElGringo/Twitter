@@ -1,0 +1,42 @@
+div {
+    ._tweeting {
+        width: 580px;
+        max-width: 580px;
+        background-color: #e8f4fb;
+        border-bottom: 1px solid rgba(0,0,0,0.2);
+        padding: 12px;
+        text-align: -webkit-center;
+        ._input {
+            margin-top: 20px;
+            input[type="text"] {
+                width: 90%;
+                height: 30px;
+                border-radius: 15px;
+                border: 1px;
+                padding-left: 20px;
+                font-size: 16px;
+                font-weight: bold;
+                color: #66747f;
+                outline: none;
+                border-color: #A3D4F2;
+                box-shadow: 0 0 0 2px #A3D4F2;
+            }
+        }
+        ._submit {
+            input[type="submit"] {
+                position: relative;
+                margin-top: 15px;
+                padding: 5px 10px;
+                left: 30%;
+                background-color: #48aae6;
+                font-size: 16px;
+                font-weight: bold;
+                color: #fff;
+                border-radius: 15px;
+                border: 1px;
+                outline: none;
+                cursor: pointer;
+            }
+        }
+    }
+}

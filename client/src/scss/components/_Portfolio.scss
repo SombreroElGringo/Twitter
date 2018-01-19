@@ -1,0 +1,117 @@
+div {
+    ._portfolio {
+        ._banner {
+            width: 100%;
+            height: 350px;
+            img {
+                width: 100%;
+                height: 100%;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+        }
+        ._subnavbar {
+            background-color: #fff;
+            border-bottom: 1px solid rgba(0,0,0,0.25);
+            height: 60px;
+            width: 100%;
+            position: relative;
+            bottom: 15px;
+            margin: 0 auto;
+            ._avatar {
+                position: absolute;
+                padding-left: 50px;
+                bottom: -40px;
+                img {
+                    border-radius: 50%;
+                    border: 4px solid #fff;
+                }
+                ._informations {
+                    position: absolute;
+                    width: 350px;
+                    padding-left: 10px;
+                    display: grid;
+                    span {
+                        &._username {
+                            font-size: 18px;
+                            font-weight: 500;
+                            color: #000;
+                        }
+
+                        &._date {
+                            display: flex;
+                            span {
+                                width: 24px;
+                                height: 24px;
+                                content: " ";
+                                display: block;
+                                margin-right: 10px;
+                                text-decoration: none;
+                                background: url('../../assets/img/calendar.png') no-repeat;
+                                background-size:cover;
+                            }
+                        }
+                    }
+                    input[type="text"] {
+                        margin-top: 20px;
+                        height: 32px;
+                        font-size: 18px;
+                        font-weight: bold;
+                        color: #aab8c2;
+                        outline: 0;
+                        background-color: #fff;
+                        border: 1px solid #e6ecf0;
+                        border-radius: 3px;
+                    }
+                }
+            }
+
+            ._navigation {
+                padding-left: 300px;
+                float: left;
+                ul {
+                    display: flex;
+                    list-style-type: none;
+                    li {
+                        span {
+                            font-size: 16px;
+                            font-weight: bold;
+                            line-height: 1;
+                            a {
+                                color: #66747f;
+                                text-decoration: none;
+                                padding: 0 4px 0 40px;
+                                &:hover {
+                                    color: #1b95e0;   
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            ._edit {
+                padding-top: 10px;
+                padding-left: 400px;
+                float: left;
+
+                input[type="button"] {
+                    width: 100%;
+                    background-color: #fff;
+                    border: 2px solid #66747f;
+                    font-size: 16px;
+                    font-weight: bold;
+                    color: #66747f;
+                    cursor: pointer;
+                    border-radius: 100px;
+                    box-shadow: none;
+                    text-align: center;
+                    white-space: nowrap;
+                    padding: 10px 15px;
+                    outline: none;
+                }
+            }
+        }
+    }
+}
