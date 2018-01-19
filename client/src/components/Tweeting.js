@@ -23,6 +23,8 @@ export default class Tweeting extends Component {
         .then((response) => {
             if (response.status === 'success') {
                 console.log(response);
+                this.text.value = '';
+                this.props.onActionReloadDataflow();
             }
         });
     }

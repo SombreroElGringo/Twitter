@@ -119,11 +119,14 @@ exports.addUser = (req, res, next) => {
  */
 exports.editUser = (req, res, next) => {
     
-    const id = req.params.id;
-	
-	User.findOne({_id: new ObjectId(id)}).then(user => {
-			
-        if (!user) {
+    const id = req.params.id; 
+    const description = req.body.description; 
+
+    const ref = db.ref(`/users/${id}`);
+
+    ref.once('value', function(snapshot) {
+        
+        if (!snapshot.key) {
 
             return res.status(404).json({
                 code: 404,
@@ -131,38 +134,19 @@ exports.editUser = (req, res, next) => {
                 message: 'User not found!',
             });
         }
-			
-		const params = req.body;
-		const POSSIBLE_KEYS = ['description'];
-			
-		let queryArgs = {};
-			
-        for (key in params) {
-            if (~POSSIBLE_KEYS.indexOf(key)) {
-                queryArgs[key] = params[key];
-            }
-        }
-			
-        if (!queryArgs) {
-            let err = new Error('Bad request');
-            err.status = 400;
-            return Promise.reject(err);
-        }
-			
-        User.update({_id: new ObjectId(id)}, {$set: queryArgs}).exec().then(err => {
-            res.json({
-                code: 200,
-                status: 'success',
-                message: 'User edited',
-            });
-        })
-        .catch(err => {
-            return next(err);
+        
+        db.ref(`/users/${id}`)
+            .set(description);
+
+        return res.json({
+            code: 200,
+            status: 'success',
+            message: 'User edited',
         });
-    })
-    .catch(err => {
-        return next(err);
-    });
+    }, errorObject => {
+
+		console.log(`[Error] ${errorObject}`);
+    }); 
 };
 
 

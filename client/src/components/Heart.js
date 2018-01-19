@@ -20,6 +20,7 @@ export default class Heart extends Component {
             if (response.status === 'success') {
                 console.log(response);
                 // TODO: reload dataflow
+                this.props.onLike();
             }
         });
     }

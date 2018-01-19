@@ -28,6 +28,7 @@ exports.getPosts = (req, res, next) => {
                     let likes = childSnapshot.val().likes ? Object.keys(childSnapshot.val().likes) : [];
                     data.push({
                         id: childSnapshot.key,
+                        user_uid: childSnapshot.val().user_uid,
                         username:  childSnapshot.val().username,
                         text:  childSnapshot.val().text,
                         createdAt:  childSnapshot.val().createdAt,
@@ -46,6 +47,7 @@ exports.getPosts = (req, res, next) => {
                 });
             }
         })
+        data = _.sortBy(data, 'createdAt').reverse();
         return res.json({ 
             posts: data,
         });

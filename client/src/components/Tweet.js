@@ -4,10 +4,15 @@ import moment from 'moment';
 import 'moment/locale/fr';
 
 export default class Tweet extends Component {
+   
+    handleLike = () => {
+        this.props.onActionReloadDataflow();
+    }
+
 	render() {
         const { id, user_uid, username, text, createdAt, likes} = this.props.data;
         const { uid, token } = this.props;
-        
+
 		return (
             <div className="_tweet">
                 <div className="_header"> 
@@ -23,7 +28,7 @@ export default class Tweet extends Component {
                     {text}
                 </div>
                 <div className="_footer">
-                    <Heart id={id} likes={likes} uid={uid} token={token} />
+                    <Heart id={id} likes={likes} uid={uid} token={token} onLike={this.handleLike} />
                 </div>
             </div>
 		);

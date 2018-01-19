@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import  { Redirect } from 'react-router-dom';
 import { auth } from '../firebase';
 
 export default class SignIn extends Component {
@@ -53,7 +54,11 @@ export default class SignIn extends Component {
     }
 
 	render() {
-        const { isValid, error } = this.state;
+        const { isAuth, isValid, error } = this.state;
+
+        if(isAuth) {
+            return <Redirect to='/'  />
+        }
 
 		return (
             <div>

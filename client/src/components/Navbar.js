@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import  { Redirect } from 'react-router-dom';
 import { auth } from '../firebase';
 
 export default class Navbar extends Component {
@@ -7,6 +8,7 @@ export default class Navbar extends Component {
 
 		this.state = {
 			uid: null,
+			isLogout: null,
 		}
 	}
 
@@ -24,9 +26,21 @@ export default class Navbar extends Component {
             });
         }, 1000)
 	}
+
+	handleLogout(e) {
+		console.log('Logout - success');
+		auth.doSignOut();
+		this.setState({
+			isLogout: true,
+		});
+	}
 	
 	render() {
-		const { uid } = this.state;
+		const { uid, isLogout } = this.state;
+
+		if (isLogout) {
+			return <Redirect to='/sign'  />
+		}
 
 		return (
 		<div className="_navbar">
@@ -45,7 +59,7 @@ export default class Navbar extends Component {
 						</li>
 						<li>
 							<span>
-								<a href="/#">Messages</a>
+								<a>Messages</a>
 							</span>
 						</li>
 					</ul>
@@ -55,6 +69,7 @@ export default class Navbar extends Component {
 				</div>
 				<div className="_avatar">
 					<a href={`/account/${uid}`}>My account</a>
+					<a onClick={e=>this.handleLogout(e)}>Déconnexion</a>
 				</div>
 			</div>
 		</div>

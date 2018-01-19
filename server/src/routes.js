@@ -19,8 +19,8 @@ module.exports = function(app, passport) {
     app.get('/users', usersController.getUsers);
     app.post('/users', usersController.addUser);
     app.get('/users/:id([a-z0-9]{12,})', usersController.getUser);
-    app.post('/users/:id([a-z0-9]{12,})', usersController.editUser);
     app.delete('/users/:id([a-z0-9]{12,})', usersController.deleteUser);
+    app.post('/users/:id([a-z0-9]{12,}/description)', usersController.editUser);
 
     /**
      * Posts routes

@@ -32,7 +32,7 @@ export default class AccountScreen extends Component {
                 data: response.user,
             });
         });
-	}
+    }
 
     render() {
         const { id, data } = this.state;
@@ -41,7 +41,7 @@ export default class AccountScreen extends Component {
 			<div className="App">
 				<Navbar />
                 { data ? (
-                    <Portfolio data={data} />
+                    <Portfolio uid={id} data={data} />
                 ) : (
                     null
                 )

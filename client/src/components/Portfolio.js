@@ -14,10 +14,51 @@ export default class Porfolio extends Component {
         }
     }
 
-    handleEditProfile() {
+    handleEditProfile(e) {
+        e.preventDefault();
+        
         let newVal = this.state.onEdit ? null : true;
+
         this.setState({
             onEdit: newVal,
+        });
+
+        if(this.state.onEdit) {
+            let description = this.description.value;
+            const uid = this.props.uid;
+            const payload = `description=${description}`;
+
+            fetch(process.env.REACT_APP_API_URI + `/users/${uid}/description`, {
+                method: 'post',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: payload,
+            })
+            .then((res) => res.json())
+            .then((response) => {
+                if (response.status === 'success') {
+                    console.log(response);
+                    this.onActionReloadPortfolio();
+                }
+            });
+        }
+    }
+
+    onActionReloadPortfolio = () => {
+        const { uid } = this.props;
+        
+        fetch(process.env.REACT_APP_API_URI + `/users/${uid}`, {
+            method: 'get',
+            credentials: 'include',
+        })
+        .then((res) => res.json())
+        .then((response) => {
+            
+            this.setState({
+                description: response.user.description,
+            });
         });
     }
 
@@ -36,7 +77,7 @@ export default class Porfolio extends Component {
                         <div className="_informations">
                             <span className="_username">@{username}</span>
                             { onEdit ? (
-                                <input type="text" defaultValue={description} name="description" maxLength="65" />
+                                <input type="text" defaultValue={description} name="description" maxLength="65" ref={(ref) => {this.description = ref}}/>
                             ):(
                                 <span className="_description">{description}</span>
                             )}
@@ -58,7 +99,7 @@ export default class Porfolio extends Component {
                         </ul>
                     </div>
                     <div className="_edit">
-                        <input type="button" value="Éditer le profil" onClick={e => this.handleEditProfile()} />
+                        <input type="button" value="Éditer le profil" onClick={e => this.handleEditProfile(e)} />
                     </div>
                 </div>
             </div>
