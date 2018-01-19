@@ -5,7 +5,6 @@ const express = require('express');
 const chalk = require('chalk');
 const dotenv = require('dotenv');
 const path = require('path');
-const mongoose = require('mongoose');
 
 /**
  *  Load environment variables from .env file, where API keys and passwords are configured.
@@ -61,28 +60,13 @@ app.use((err, req, res, next) => {
     });
 });
 
-/**
- * Connect to the Database & start Express server.
- */
-const options = require('./config/mongoose');
 
-mongoose.Promise = global.Promise;
-mongoose.connect(process.env.MONGODB_URI_PROD || process.env.MONGODB_URI_DEV, options)
-        .then(() => {
-            console.log('%s Connection has been established successfully with the database', chalk.green('✓'));
-            /**
-             * Running server
-             */
-            app.listen(app.get('port'), () => {
-                console.log('%s App is running at http://localhost:%d in %s mode', chalk.green('✓'), app.get('port'), app.get('env'));
-                console.log('-- Press CTRL-C to stop --\n');
-        });
-})    
-.catch(err => {
-    console.error(Object.assign({},err, {
-        message: `${err.message}\n
-        ${chalk.red('✗')} MongoDB connection error. Please make sure MongoDB is running.`
-    }));
+/**
+ * Running server
+ */
+app.listen(app.get('port'), () => {
+    console.log('%s App is running at http://localhost:%d in %s mode', chalk.green('✓'), app.get('port'), app.get('env'));
+    console.log('-- Press CTRL-C to stop --\n');
 });
 
 module.exports = app;
