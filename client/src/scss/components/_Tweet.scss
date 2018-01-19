@@ -11,6 +11,9 @@ div {
                 position: relative;
                 top: 24px;
                 border-radius: 50%;
+                background-image: url(https://placehold.it/64x64/eee/eee);
+                width: 64px;
+                height: 64px;
             }
             span {
                 &._username {

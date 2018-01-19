@@ -5,17 +5,48 @@ import Portfolio from '../components/Portfolio';
 import Dataflow from '../components/Dataflow';
 
 export default class AccountScreen extends Component {
-    render() {
-        const data = {
-            username: 'michel',
-            description: 'Artiste & Ingénieur!',
-            createdAt: '2017-10-13T16:13:35.367Z',
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            data: null,
+            id: this.props.match.params.id || null,
         }
+    }
+
+    componentDidMount() {
+        const { id } = this.state;
+        let uid = id ;
+
+        if (!uid) {
+            uid = '';
+        }
+        
+        fetch(process.env.REACT_APP_API_URI + `/users/${uid}`, {
+            method: 'get',
+            credentials: 'include',
+        })
+        .then((res) => res.json())
+        .then((response) => {
+            this.setState({
+                data: response.user,
+            });
+        });
+    }
+
+    render() {
+        const { id, data } = this.state;
+
 		return (
 			<div className="App">
 				<Navbar />
-                <Portfolio data={data} />
-				<Dataflow username={'current or params'}/>
+                { data ? (
+                    <Portfolio uid={id} data={data} />
+                ) : (
+                    null
+                )
+                }
+                <Dataflow uid={id} />
 			</div>
 		);
     }

@@ -1,5 +1,7 @@
-const Post = require('../models/Post');
-const ObjectId = require('mongodb').ObjectID;
+const md5 = require('md5');
+const _ = require('lodash');
+const admin = require('firebase-admin');
+const db = admin.database();
 
 /** 
  *  Posts page, return a JSON with all posts in the db
@@ -12,21 +14,44 @@ const ObjectId = require('mongodb').ObjectID;
  */
 exports.getPosts = (req, res, next) => {
 
-    Post.find()
-        .sort({createdAt: -1})
-        .then(data => {
+    const uid = req.query.uid;
+    const ref = db.ref('posts');
 
+    ref.once('value', function(snapshot) {
+        let data = [];
+        snapshot.forEach(function(childSnapshot) {
+            
+            if (uid) {
+                if (uid === childSnapshot.val().user_uid) {
+                    let likes = childSnapshot.val().likes ? Object.keys(childSnapshot.val().likes) : [];
+                    data.push({
+                        id: childSnapshot.key,
+                        user_uid: childSnapshot.val().user_uid,
+                        username:  childSnapshot.val().username,
+                        text:  childSnapshot.val().text,
+                        createdAt:  childSnapshot.val().createdAt,
+                        likes,
+                    });
+                }
+            } else {
+                let likes = childSnapshot.val().likes ? Object.keys(childSnapshot.val().likes) : [];
+                data.push({
+                    id: childSnapshot.key,
+                    user_uid: childSnapshot.val().user_uid,
+                    username:  childSnapshot.val().username,
+                    text:  childSnapshot.val().text,
+                    createdAt:  childSnapshot.val().createdAt,
+                    likes,
+                });
+            }
+        })
+        data = _.sortBy(data, 'createdAt').reverse();
         return res.json({ 
             posts: data,
         });
-    })
-    .catch(err => {
+    }, errorObject => {
 
-		return res.status(404).json({
-			code: 404,
-			status: 'error',
-			message: `Bad Request!\n ${err}`,
-        })
+		console.log(`[Error] ${errorObject}`);
     });
 };
 
@@ -44,21 +69,83 @@ exports.getPost = (req, res, next) => {
 
     const id = req.params.id; 
 
-    Post.findOne({_id: new ObjectId(id)})
-        .then(data => {
+    const ref = db.ref(`/posts/${id}`);
+
+    ref.once('value', function(snapshot) {
+        
+        let likes = snapshot.val().likes ? Object.keys(snapshot.val().likes) : [];
+        const data = {
+            id: snapshot.key,
+            user_uid: snapshot.val().user_uid,
+            username:  snapshot.val().username,
+            text:  snapshot.val().text,
+            createdAt:  snapshot.val().createdAt,
+            likes,
+        };
 
         return res.json({ 
             post: data,
         });
-    })
-    .catch(err => {
+    }, errorObject => {
 
-		return res.status(404).json({
-			code: 404,
-			status: 'error',
-			message: `Bad Request!\n ${err}`,
-        })
+		console.log(`[Error] ${errorObject}`);
     });
+};
+
+
+/** 
+ *  Posts page, like a post in the db
+ * @function likePost
+ * @name /posts/:id
+ * @method POST
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function 
+ */
+exports.likePost = (req, res, next) => {
+
+    const uid = req.body.uid;
+    const id = req.params.id;
+
+    if (!uid || !id) {
+
+        let params = id ? '' : 'id';
+        params += uid ? '' : params === '' ? 'uid' : ', uid';
+
+        return res.status(400).json({
+			code: 400,
+			status: 'error',
+			message: `${params} cannot be empty!`,
+		});
+    }
+    db.ref(`/posts/${id}/likes/${uid}`)
+        .once('value')
+        .then(snapshot => {
+            let type = '';
+            if (snapshot.val()) {
+                db.ref(`/posts/${id}/likes/${uid}`)
+                    .remove();
+                type = 'unliked';
+            } else {
+                db.ref(`/posts/${id}/likes/${uid}`)
+                    .set('like');
+                type = 'liked';
+            }
+
+            db.ref(`/notifications`)
+                .push({
+                    type,
+                    post_id: id,
+                    user_uid: uid,
+                    createdAt: Date.now(),
+                });
+
+            return res.status(200).json({
+                code: 200,
+                status: 'success',
+                message: `Tweet ${type}!`
+            });
+        });
 };
 
 
@@ -73,30 +160,46 @@ exports.getPost = (req, res, next) => {
  */
 exports.addPost = (req, res, next) => {
 
-    if (!req.body.user_id) {
+    const user_uid = req.body.user_uid;
+    const text = req.body.text;
+
+    if (!user_uid || !text) {
+
+        let params = user_uid ? '' : 'user_uid';
+        params += text ? '' : params === '' ? 'text' : ', text';
+
         return res.status(400).json({
 			code: 400,
 			status: 'error',
-			message: 'user_id cannot be empty!',
+			message: `${params} cannot be empty!`,
 		});
     }
 
-    const post = new Post({
-        user_id: req.body.user_id,
-        text: req.body.text,
-    });
+    const now = Date.now();
+    let str = `_${user_uid}_${now}_`;
+    const uid = md5(str);
+    
+    db.ref('/users/' + user_uid)
+        .once('value')
+        .then(snapshot => {
+            const username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
+            //console.log(`${username} tweeted!`);
+            const ref = db.ref('posts');
+            const postsRef = ref.child(uid);
+            postsRef.set({
+                text: text,
+                user_uid: user_uid,
+                username: username,
+                likes: [],
+                createdAt: now
+            });
 
-    post.save().then(err => {
-
-        return res.status(201).json({
-            code: 201,
-            status: 'success',
-            message: 'Story created!'
+            return res.status(201).json({
+                code: 201,
+                status: 'success',
+                message: 'Tweet created!'
+            });
         });
-    }).catch(err => {
-
-        return next(err);
-    });
 };
 
 
@@ -111,11 +214,14 @@ exports.addPost = (req, res, next) => {
  */
 exports.editPost = (req, res, next) => {
     
-    const id = req.params.id;
-	
-	Post.findOne({_id: new ObjectId(id)}).then(post => {
-			
-        if (!post) {
+    const id = req.params.id; 
+    const text = req.body.text; 
+
+    const ref = db.ref(`/posts/${id}`);
+
+    ref.once('value', function(snapshot) {
+        
+        if (!snapshot.key) {
 
             return res.status(404).json({
                 code: 404,
@@ -123,38 +229,19 @@ exports.editPost = (req, res, next) => {
                 message: 'Post not found!',
             });
         }
-			
-		const params = req.body;
-		const POSSIBLE_KEYS = ['text'];
-			
-		let queryArgs = {};
-			
-        for (key in params) {
-            if (~POSSIBLE_KEYS.indexOf(key)) {
-                queryArgs[key] = params[key];
-            }
-        }
-			
-        if (!queryArgs) {
-            let err = new Error('Bad request');
-            err.status = 400;
-            return Promise.reject(err);
-        }
-			
-        Post.update({_id: new ObjectId(id)}, {$set: queryArgs}).exec().then(err => {
-            res.json({
-                code: 200,
-                status: 'success',
-                message: 'Post edited',
-            });
-        })
-        .catch(err => {
-            return next(err);
+        
+        db.ref(`/posts/${id}`)
+            .set(text);
+
+        return res.json({
+            code: 200,
+            status: 'success',
+            message: 'Post edited',
         });
-    })
-    .catch(err => {
-        return next(err);
-    });
+    }, errorObject => {
+
+		console.log(`[Error] ${errorObject}`);
+    }); 
 };
 
 
@@ -170,30 +257,11 @@ exports.editPost = (req, res, next) => {
 exports.deletePost = (req, res, next) => {
 
     const id = req.params.id;
-
-    Post.findOne({_id: new ObjectId(id)}).then(post => {
-        
-        if (!post) {
-
-            return res.status(404).json({
-                code: 404,
-                status: 'error',
-                message: 'Post not found!',
-            });
-        }
-
-        Post.remove({_id: new ObjectId(id)}).then(err => {
-            res.json({
-                code: 200,
-                status: 'success',
-                message: 'Story deleted!',
-            });
-        })
-        .catch(err => {
-            return next(err);
-        });
-    })
-    .catch(err => {
-        return next(err);
+    db.ref(`/posts/${id}`)
+        .remove();
+    return res.json({
+        code: 200,
+        status: 'success',
+        message: 'Post deleted',
     });
 };

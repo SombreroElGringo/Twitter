@@ -14,8 +14,8 @@ module.exports = function(app) {
 	app.set('json spaces', 2);
 	app.use(expressStatusMonitor());
 	app.use(logger('dev'));
-	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended: true }));
+	app.use(bodyParser.json());
 	app.use(cookieParser());
 	app.use(methodOverride());
 	app.use((req, res, next) => {

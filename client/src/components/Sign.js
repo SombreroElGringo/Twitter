@@ -11,11 +11,6 @@ export default class Sign extends Component {
         }
     }
 
-    handleClick() {
-        
-        console.log('liked!')
-    }
-
     handleSignFormType = (type) => {
 
         this.setState({

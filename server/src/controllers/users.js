@@ -1,4 +1,6 @@
-const User = require('../models/User');
+const admin = require('firebase-admin');
+const _ = require('lodash');
+const db = admin.database();
 
 /** 
  *  Users page, return a JSON with all users in the db
@@ -11,20 +13,26 @@ const User = require('../models/User');
  */
 exports.getUsers = (req, res, next) => {
 
-    User.find()
-        .then(data => {
+    const ref = db.ref('users');
 
+    ref.once('value', function(snapshot) {
+        let data = [];
+        snapshot.forEach(function(childSnapshot) {
+            
+            data.push({
+                id: childSnapshot.key,
+                username:  childSnapshot.val().username,
+                description:  childSnapshot.val().description,
+                createdAt:  childSnapshot.val().createdAt,
+            });
+        })
+        data = _.sortBy(data, 'createdAt').reverse();
         return res.json({ 
             users: data,
         });
-    })
-    .catch(err => {
+    }, errorObject => {
 
-		return res.status(404).json({
-			code: 404,
-			status: 'error',
-			message: `Bad Request!\n ${err}`,
-        })
+		console.log(`[Error] ${errorObject}`);
     });
 };
 
@@ -42,20 +50,23 @@ exports.getUser = (req, res, next) => {
 
     const id = req.params.id; 
 
-    User.findOne({_id: new ObjectId(id)})
-        .then(data => {
+    const ref = db.ref(`/users/${id}`);
+
+    ref.once('value', function(snapshot) {
+  
+        const data = {
+            id: snapshot.key,
+            username:  snapshot.val().username,
+            description: snapshot.val().description,
+            createdAt:  snapshot.val().createdAt,
+        };
 
         return res.json({ 
             user: data,
         });
-    })
-    .catch(err => {
+    }, errorObject => {
 
-		return res.status(404).json({
-			code: 404,
-			status: 'error',
-			message: `User not found!`,
-        })
+		console.log(`[Error] ${errorObject}`);
     });
 };
 
@@ -70,12 +81,13 @@ exports.getUser = (req, res, next) => {
  * @param {Function} next - Express next middleware function 
  */
 exports.addUser = (req, res, next) => {
-
-    if (!req.body.email || !req.body.password || !req.body.username) {
+    
+    if (!req.body.uid ||!req.body.email || !req.body.username || !req.body.token) {
 
         let params = req.body.email ? '' : 'email';
-        params += req.body.password ? '' : params === '' ? 'password' : ', password';
+        params += req.body.uid ? '' : params === '' ? 'uid' : ', uid';
         params += req.body.username ? '' : params === '' ? 'username' : ', username';
+        params += req.body.token ? '' : params === '' ? 'token' : ', token';
 
         return res.status(400).json({
 			code: 400,
@@ -84,22 +96,20 @@ exports.addUser = (req, res, next) => {
 		});
     }
 
-    const user = new User({
+    const ref = db.ref('users');
+    var usersRef = ref.child(req.body.uid);
+    usersRef.set({
         email: req.body.email,
-        password: req.body.password,
         username: req.body.username,
+        description: '',
+        token: req.body.token,
+        createdAt: Date.now(),
     });
 
-    user.save().then(err => {
-
-        return res.status(201).json({
-            code: 201,
-            status: 'success',
-            message: 'User created!'
-        });
-    }).catch(err => {
-
-        return next(err);
+    return res.status(201).json({
+        code: 201,
+        status: 'success',
+        message: 'User created!'
     });
 };
 
@@ -115,11 +125,14 @@ exports.addUser = (req, res, next) => {
  */
 exports.editUser = (req, res, next) => {
     
-    const id = req.params.id;
-	
-	User.findOne({_id: new ObjectId(id)}).then(user => {
-			
-        if (!user) {
+    const id = req.params.id; 
+    const description = req.body.description; 
+
+    const ref = db.ref(`/users/${id}`);
+
+    ref.once('value', function(snapshot) {
+        
+        if (!snapshot.key) {
 
             return res.status(404).json({
                 code: 404,
@@ -127,38 +140,19 @@ exports.editUser = (req, res, next) => {
                 message: 'User not found!',
             });
         }
-			
-		const params = req.body;
-		const POSSIBLE_KEYS = ['description'];
-			
-		let queryArgs = {};
-			
-        for (key in params) {
-            if (~POSSIBLE_KEYS.indexOf(key)) {
-                queryArgs[key] = params[key];
-            }
-        }
-			
-        if (!queryArgs) {
-            let err = new Error('Bad request');
-            err.status = 400;
-            return Promise.reject(err);
-        }
-			
-        User.update({_id: new ObjectId(id)}, {$set: queryArgs}).exec().then(err => {
-            res.json({
-                code: 200,
-                status: 'success',
-                message: 'User edited',
-            });
-        })
-        .catch(err => {
-            return next(err);
+        
+        db.ref(`/users/${id}`)
+            .set(description);
+
+        return res.json({
+            code: 200,
+            status: 'success',
+            message: 'User edited',
         });
-    })
-    .catch(err => {
-        return next(err);
-    });
+    }, errorObject => {
+
+		console.log(`[Error] ${errorObject}`);
+    }); 
 };
 
 
@@ -175,29 +169,11 @@ exports.deleteUser = (req, res, next) => {
 
     const id = req.params.id;
 
-    User.findOne({_id: new ObjectId(id)}).then(user => {
-        
-        if (!user) {
-
-            return res.status(404).json({
-                code: 404,
-                status: 'error',
-                message: 'User not found!',
-            });
-        }
-
-        User.remove({_id: new ObjectId(id)}).then(err => {
-            res.json({
-                code: 200,
-                status: 'success',
-                message: 'User deleted!',
-            });
-        })
-        .catch(err => {
-            return next(err);
-        });
-    })
-    .catch(err => {
-        return next(err);
+    db.ref(`/users/${id}`)
+        .remove();
+    return res.json({
+        code: 200,
+        status: 'success',
+        message: 'User deleted',
     });
 };

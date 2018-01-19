@@ -1,4 +1,14 @@
 div {
+    &._errors {
+        font-size: 12px;
+        color: darkred;
+        position: relative;
+        background-color: #fff;
+        ul {
+            padding: 10px 0;
+            padding-left: 60px;
+        }
+    }
     &._signin {
         width: 450px;
         background-color: #fff;
@@ -10,16 +20,19 @@ div {
         ._inputs {
             padding: 0 40px 60px;
             display: grid;
-            input[type="text"], input[type="email"] {
+            input[type="text"], input[type="email"], input[type="password"] {
                 margin-top: 20px;
                 height: 32px;
                 font-size: 18px;
                 font-weight: bold;
-                color: #aab8c2;
+                color: #464b4e;
                 outline: 0;
                 background-color: #fff;
                 border: 1px solid #e6ecf0;
                 border-radius: 3px;
+                input::placeholder {
+                    color: #aab8c2;
+                }
             }
         }
         ._submit {
