@@ -12,6 +12,16 @@ export const doSignInWithEmailAndPassword = (email, password) =>
 export const doSignOut = () =>
   	auth.signOut();
 
+export const isUserAuth = () => {
+	return new Promise( (res, rej) => auth.onAuthStateChanged(function(user) {
+		if (user) {
+		  	return res(true);
+		} else {
+		  	return res(false);
+		}
+	}));
+}
+
 // Get Current User 
 export const getCurrentUser = () =>
 	  auth.currentUser;

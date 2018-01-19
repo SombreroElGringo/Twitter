@@ -3,6 +3,7 @@
  */
 const usersController = require('./controllers/users');
 const postsController = require('./controllers/posts');
+const notificationsController = require('./controllers/notifications');
 const indexController = require('./controllers/index');
 
 
@@ -32,6 +33,10 @@ module.exports = function(app, passport) {
     app.delete('/posts/:id([a-z0-9]{12,})', postsController.deletePost);
     app.post('/posts/:id([a-z0-9]{12,})/like', postsController.likePost);
 
+    /**
+     * Notifications routes
+     */
+    app.get('/notifications', notificationsController.getNotifications);
 
     return app;
 }

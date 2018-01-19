@@ -1,6 +1,6 @@
 const admin = require('firebase-admin');
+const _ = require('lodash');
 const db = admin.database();
-const User = require('../models/User');
 
 /** 
  *  Users page, return a JSON with all users in the db
@@ -13,20 +13,26 @@ const User = require('../models/User');
  */
 exports.getUsers = (req, res, next) => {
 
-    User.find()
-        .then(data => {
+    const ref = db.ref('users');
 
+    ref.once('value', function(snapshot) {
+        let data = [];
+        snapshot.forEach(function(childSnapshot) {
+            
+            data.push({
+                id: childSnapshot.key,
+                username:  childSnapshot.val().username,
+                description:  childSnapshot.val().description,
+                createdAt:  childSnapshot.val().createdAt,
+            });
+        })
+        data = _.sortBy(data, 'createdAt').reverse();
         return res.json({ 
             users: data,
         });
-    })
-    .catch(err => {
+    }, errorObject => {
 
-		return res.status(404).json({
-			code: 404,
-			status: 'error',
-			message: `Bad Request!\n ${err}`,
-        })
+		console.log(`[Error] ${errorObject}`);
     });
 };
 
@@ -163,29 +169,11 @@ exports.deleteUser = (req, res, next) => {
 
     const id = req.params.id;
 
-    User.findOne({_id: new ObjectId(id)}).then(user => {
-        
-        if (!user) {
-
-            return res.status(404).json({
-                code: 404,
-                status: 'error',
-                message: 'User not found!',
-            });
-        }
-
-        User.remove({_id: new ObjectId(id)}).then(err => {
-            res.json({
-                code: 200,
-                status: 'success',
-                message: 'User deleted!',
-            });
-        })
-        .catch(err => {
-            return next(err);
-        });
-    })
-    .catch(err => {
-        return next(err);
+    db.ref(`/users/${id}`)
+        .remove();
+    return res.json({
+        code: 200,
+        status: 'success',
+        message: 'User deleted',
     });
 };

@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
-import Notification from './Notification';
+import '../assets/css/App.css';
+import Tweet from '../components/Tweet';
 import { auth } from '../firebase';
 
-export default class Notifications extends Component {
+export default class SingleTweetScreen extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            data: null,
             uid: null,
-            datas: null,
-        };
+            token: null,
+            id: this.props.match.params.id,
+        }
     }
+
     componentDidMount() {
 
         const interval = window.setInterval(async ()=>{
@@ -19,49 +23,44 @@ export default class Notifications extends Component {
             if(!user)
                 return false;
             clearInterval(interval);
-
+            
             const token = await auth.getCurrentUserToken();
+            const { id } = this.state;
+
             this.setState({
                 token,
                 uid: user.uid,
             });
 
-            const { uid } = this.state;
-
-            // let query = `?token=${token}`;
-            // query += uid ? `&uid=${uid}` : '';
-            let query = `?uid=${uid}`;
             
-            fetch(process.env.REACT_APP_API_URI + `/notifications${query}`, {
+            fetch(process.env.REACT_APP_API_URI + `/posts/${id}`, {
                 method: 'get',
                 credentials: 'include',
             })
             .then((res) => res.json())
             .then((response) => {
-                if(response.notifications && response.notifications.length > 0) {
+                if(response.post) {
                     this.setState({
-                        datas: response.notifications,
+                        data: response.post,
                     });
                 }
             });
         }, 1000)
     }
-    
-	render() {
-        const { datas } = this.state;
 
-		return (
-            <div className="_notifications">
-            { 
-                datas ? (
-                    datas.map((data, i) => {
-                        return <Notification key={i} data={data} />;
-                    })
+    render() {
+        const { uid, token, data } = this.state;
+        return (
+            <div className="App">
+                <div className="_single">
+                {   data ? (
+                    <Tweet data={data} token={token} uid={uid}/>
                 ) : (
                     <span className='_error'>No data!</span>
                 )
-            }
+                }
+                </div>
             </div>
-		);
-	}
+        );
+    }
 }

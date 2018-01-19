@@ -30,7 +30,6 @@ export default class Tweeting extends Component {
     }
 
 	render() {
-        const { username } = this.props;
 		return (
             <div className="_tweeting">
                 <div className="_input">

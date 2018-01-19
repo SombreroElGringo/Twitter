@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Tweeting from './Tweeting';
 import Tweet from './Tweet';
 import { auth } from '../firebase';
-import { setInterval } from 'timers';
 
 export default class Dataflow extends Component {
     constructor(props) {

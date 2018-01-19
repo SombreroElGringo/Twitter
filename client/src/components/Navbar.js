@@ -13,7 +13,6 @@ export default class Navbar extends Component {
 	}
 
 	componentDidMount() {
-        const { uid } = this.state;
         const interval = window.setInterval(async ()=>{
 
             let user = auth.getCurrentUser();

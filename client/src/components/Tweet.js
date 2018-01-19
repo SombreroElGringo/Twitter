@@ -6,7 +6,8 @@ import 'moment/locale/fr';
 export default class Tweet extends Component {
    
     handleLike = () => {
-        this.props.onActionReloadDataflow();
+        if (this.props.onActionReloadDataflow)
+            this.props.onActionReloadDataflow();
     }
 
 	render() {
