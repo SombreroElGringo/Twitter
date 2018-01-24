@@ -1,0 +1,373 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "API Twitter",
+        "description": "A web application project that looks like Twitter!",
+        "version": "1.0"
+    },
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/": {
+            "get": {
+                "x-swagger-router-controller": "home",
+                "operationId": "index",
+                "tags": ["Index"],
+                "description": "Home page",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Hello world!"
+                    },
+                    "404": {
+                        "description": "Not found!"
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "x-swagger-router-controller": "users",
+                "operationId": "users",
+                "tags": ["Users"],
+                "description": "Get all users!",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "A users object with all users in the database!"
+                    },
+                    "404": {
+                        "description": "Not found!"
+                    }
+                }
+            },
+            "post": {
+                "x-swagger-router-controller": "users",
+                "operationId": "users",
+                "tags": ["Users"],
+                "description": "Add a user in the database",
+                "parameters": [
+                    {   
+                        "name" : "email",
+                        "in": "body",
+                        "required": true,
+                        "description": "Email of the user"
+                    }, 
+                    {
+                        "name" : "username",
+                        "in": "body",
+                        "required": true,
+                        "description": "Username of the user"
+                    }, 
+                    {
+                        "name" : "token",
+                        "in": "body",
+                        "required": true,
+                        "description": "Token generate by Firebase for the user"
+                    }, 
+                    {
+                        "name" : "uid",
+                        "in": "body",
+                        "required": true,
+                        "description": "User's id"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User created!"
+                    },
+                    "400": {
+                        "description": "Error: missing parameters!"
+                    },
+                    "404": {
+                        "description": "Not found!"
+                    }
+                }
+            }
+        },
+        "/users/:id": {
+            "get": {
+                "x-swagger-router-controller": "users",
+                "operationId": "users",
+                "tags": ["Users"],
+                "description": "Get a user by id!",
+                "parameters": [
+                    {
+                        "name" : "id",
+                        "in": "parameter",
+                        "required": true,
+                        "description": "User's id"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A user object with all user innformation!"
+                    },
+                    "400": {
+                        "description": "Error: missing parameters!"
+                    },
+                    "404": {
+                        "description": "Not found!"
+                    }
+                }
+            },
+            "delete": {
+                "x-swagger-router-controller": "users",
+                "operationId": "users",
+                "tags": ["Users"],
+                "description": "Delete a user from the database",
+                "parameters": [
+                    {
+                        "name" : "id",
+                        "in": "parameter",
+                        "required": true,
+                        "description": "User's id"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User deleted!"
+                    },
+                    "400": {
+                        "description": "Error: message!"
+                    },
+                    "404": {
+                        "description": "Not found!"
+                    }
+                }
+            }
+        },
+        "/users/:id/descritpion": {
+            "post": {
+                "x-swagger-router-controller": "users",
+                "operationId": "users",
+                "tags": ["Users"],
+                "description": "Add or edit the description of a user",
+                "parameters": [
+                    {
+                        "name" : "id",
+                        "in": "parameter",
+                        "required": true,
+                        "description": "User's id"
+                    },
+                    {
+                        "name" : "description",
+                        "in": "body",
+                        "required": true,
+                        "description": "Description of the user"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User edited!"
+                    },
+                    "400": {
+                        "description": "Error: message!"
+                    },
+                    "404": {
+                        "description": "Not found!"
+                    }
+                }
+            }
+        },
+        "/posts": {
+            "get": {
+                "x-swagger-router-controller": "posts",
+                "operationId": "posts",
+                "tags": ["Posts"],
+                "description": "Get all posts!",
+                "parameters": [
+                    {
+                        "name" : "uid",
+                        "in": "query",
+                        "required": true,
+                        "description": "User's id, for have all user's posts"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A posts object with all posts in the database!"
+                    },
+                    "404": {
+                        "description": "Not found!"
+                    }
+                }
+            },
+            "post": {
+                "x-swagger-router-controller": "posts",
+                "operationId": "posts",
+                "tags": ["Posts"],
+                "description": "Add a post in the database",
+                "parameters": [
+                    {
+                        "name" : "user_uid",
+                        "in": "body",
+                        "required": true,
+                        "description": "User's id"
+                    },
+                    {
+                        "name" : "text",
+                        "in": "body",
+                        "required": true,
+                        "description": "Text of the post"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Tweet created!"
+                    },
+                    "400": {
+                        "description": "Error: missing parameters!"
+                    },
+                    "404": {
+                        "description": "Not found!"
+                    }
+                }
+            }
+        },
+        "/posts/:id": {
+            "get": {
+                "x-swagger-router-controller": "posts",
+                "operationId": "posts",
+                "tags": ["Posts"],
+                "description": "Get a post by id!",
+                "parameters": [
+                    {
+                        "name" : "id",
+                        "in": "parameter",
+                        "required": true,
+                        "description": "Post's id"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A post object with all post innformation!"
+                    },
+                    "400": {
+                        "description": "Error: missing parameters!"
+                    },
+                    "404": {
+                        "description": "Not found!"
+                    }
+                }
+            },
+            "post": {
+                "x-swagger-router-controller": "posts",
+                "operationId": "posts",
+                "tags": ["Posts"],
+                "description": "Add or edit the text of a post",
+                "parameters": [
+                    {
+                        "name" : "id",
+                        "in": "parameter",
+                        "required": true,
+                        "description": "User's id"
+                    },
+                    {
+                        "name" : "text",
+                        "in": "body",
+                        "required": true,
+                        "description": "Text of the post"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Post edited!"
+                    },
+                    "400": {
+                        "description": "Error: message!"
+                    },
+                    "404": {
+                        "description": "Not found!"
+                    }
+                }
+            },
+            "delete": {
+                "x-swagger-router-controller": "posts",
+                "operationId": "posts",
+                "tags": ["Posts"],
+                "description": "Delete a post from the database",
+                "parameters": [
+                    {
+                        "name" : "id",
+                        "in": "parameter",
+                        "required": true,
+                        "description": "Post's id"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tweet deleted!"
+                    },
+                    "400": {
+                        "description": "Error: message!"
+                    },
+                    "404": {
+                        "description": "Not found!"
+                    }
+                }
+            }
+        },
+        "/posts/:id/like": {
+            "post": {
+                "x-swagger-router-controller": "posts",
+                "operationId": "posts",
+                "tags": ["Posts"],
+                "description": "Add or remove a like on a post",
+                "parameters": [
+                    {
+                        "name" : "id",
+                        "in": "parameter",
+                        "required": true,
+                        "description": "Post's id"
+                    },
+                    {
+                        "name" : "uid",
+                        "in": "body",
+                        "required": true,
+                        "description": "User's id"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tweet liked or unliked!"
+                    },
+                    "400": {
+                        "description": "Error: message!"
+                    },
+                    "404": {
+                        "description": "Not found!"
+                    }
+                }
+            }
+        },
+        "/notifications": {
+            "get": {
+                "x-swagger-router-controller": "notifications",
+                "operationId": "notifications",
+                "tags": ["Notifications"],
+                "description": "Get all notifications of the db!",
+                "parameters": [
+                    {
+                        "name" : "uid",
+                        "in": "query",
+                        "required": true,
+                        "description": "User's id, for get all notfications of a user"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A notifications object with all notifications!"
+                    },
+                    "400": {
+                        "description": "Error: missing parameters!"
+                    },
+                    "404": {
+                        "description": "Not found!"
+                    }
+                }
+            }
+        }
+    }
+}

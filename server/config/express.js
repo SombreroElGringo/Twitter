@@ -7,12 +7,15 @@ const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
 const path = require('path');
 const logger = require('morgan');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 
 module.exports = function(app) {
 
 	app.set('port', process.env.PORT || 5000);
 	app.set('json spaces', 2);
 	app.use(expressStatusMonitor());
+	app.use('/api/v1/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument, false, null, null, null, null, 'API Twitter'));
 	app.use(logger('dev'));
 	app.use(bodyParser.urlencoded({ extended: true }));
 	app.use(bodyParser.json());

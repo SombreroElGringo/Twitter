@@ -96,7 +96,7 @@ exports.getPost = (req, res, next) => {
 /** 
  *  Posts page, like a post in the db
  * @function likePost
- * @name /posts/:id
+ * @name /posts/:id/like
  * @method POST
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
