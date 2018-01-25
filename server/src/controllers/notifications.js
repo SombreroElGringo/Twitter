@@ -53,12 +53,20 @@ exports.getNotifications = (req, res, next) => {
                     }
                 }).then(() =>{
                     data = _.sortBy(data, 'createdAt').reverse();
-                    return res.json({ 
-                        notifications: data,
-                    });
+                    if(data.length > 0) {
+                        return res.status(200).json({ 
+                            notifications: data,
+                        });
+                    }
                 });
         });
         
+        if (data === []) {
+            return res.json({ 
+                notifications: [],
+            });
+        }
+
     }, errorObject => {
 
 		console.log(`[Error] ${errorObject}`);
